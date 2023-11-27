@@ -1,0 +1,170 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+     <title> Tracking </title>
+     <style>
+          #map {
+               height: 600px;
+               width: 100%;
+          }
+     </style>
+</head>
+
+<body>
+     <h1> Vehicle's Real-Time Tracking </h1>
+     <div id="map"></div>
+
+     <script>
+
+          let map;
+
+          function initMap() {
+               const initialLocation = { lat: 51.10287829836088, lng: 71.3960347231054 }; // Начальное положение карты
+
+               map = new google.maps.Map(document.getElementById("map"), {
+                    center: initialLocation,
+                    zoom: 11,
+               });
+
+               // Пример трех локаций для трекинга
+               const locations = [
+                    { lat: 51.098469658843236, lng: 71.40887698957481 }, //  51.098469658843236, 71.40887698957481 улы дала
+                    { lat: 51.10287829836088, lng: 71.3960347231054 }, //  51.10287829836088, 71.3960347231054 туран
+                    { lat: 51.08615102293493, lng: 71.40351704814039 }, //  51.08615102293493, 71.40351704814039
+               ];
+
+               const carIcon = 'https://cdn0.iconfinder.com/data/icons/map-and-navigation-2/65/62-512.png';
+
+               const markers = locations.map((location, index) => {
+                    const marker = new google.maps.Marker({
+                         position: location,
+                         map: map,
+                         icon: {
+                              url: carIcon,
+                              scaledSize: new google.maps.Size(40, 40),
+                         },
+                    });
+
+                    const infoWindowContent = `
+                         <div style="max-width: 200px;">
+                         <h2> Vehicle ${index + 1}</h2>
+                         <p> Model: <strong> Tesla </strong></p>
+                         <p> Year: <strong> 2022 </strong></p>
+                         <p> License Plate: <strong> 123abc01 </strong></p>
+                         <p> Sitting capacity: <strong> 4 </strong></p>
+                         <p> Fueling information: <strong> ... </strong></p>
+                         <div style="position: relative;">
+                              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/2018_Tesla_Model_S_75D.jpg/1200px-2018_Tesla_Model_S_75D.jpg" style="max-width: 100%; height: auto; display: block;"/>
+                         </div>
+                         </div>`;
+
+                    // const infoWindowContent = `
+                    //      <div>
+                    //           <h2>Vehicle ${index + 1}</h2>
+                    //           <p> Additional details about the vehicle ${index + 1}</p>
+                    //      </div> `;
+
+                    // info window
+                    const infoWindow = new google.maps.InfoWindow({
+                         content: infoWindowContent,
+                    });
+
+                    marker.addListener('click', () => {
+                         infoWindow.open(map, marker);
+                    });
+
+                    return marker;
+               });
+
+               const speedInDegrees = 0.0002; // Это приблизительное значение
+
+               // Функция для обновления координат маркеров (имитация движения)
+               function updateMarkers() {
+                    const offsetFactor = 0.001;
+
+                    locations.forEach((location, index) => {
+                         // Генерация случайного смещения для имитации движения
+                         const offset = {
+                              // lat: Math.random() * 0.1 - 0.05,// слишком быстрая имитация
+                              // lng: Math.random() * 0.1 - 0.05,
+                              lat: (Math.random() * offsetFactor - offsetFactor / 9),
+                              lng: (Math.random() * offsetFactor - offsetFactor / 9)
+                         };
+
+                         // Обновление координат маркеров с учетом смещения
+                         markers[index].setPosition({
+                              lat: location.lat + offset.lat,
+                              lng: location.lng + offset.lng,
+                         });
+                    });
+
+                    setTimeout(updateMarkers, 3000); // 3 сек
+               }
+
+               // updateMarkers();
+
+               // Создание Directions Service
+               const directionsService = new google.maps.DirectionsService();
+
+               // Функция для получения маршрута между двумя точками
+               function calculateAndDisplayRoute(start, end) {
+                    directionsService.route(
+                         {
+                              origin: start,
+                              destination: end,
+                              travelMode: google.maps.TravelMode.DRIVING,
+                         },
+                         (response, status) => {
+                              if (status === google.maps.DirectionsStatus.OK) {
+                                   const route = response.routes[0].overview_path; // Точки маршрута
+                                   moveMarkersAlongRoute(route); // Перемещение маркеров по маршруту
+                              } else {
+                                   console.error('Ошибка получения маршрута:', status);
+                              }
+                         }
+                    );
+               }
+
+               // Функция для перемещения маркеров по маршруту
+               function moveMarkersAlongRoute(route, markers) {
+                    let index = 0;
+
+                    const moveMarker = (markerIndex) => {
+                         if (index < route.length) {
+                              markers[markerIndex].setPosition(route[index]); // Устанавливаем позицию маркера на текущую точку маршрута
+                              setTimeout(() => {
+                                   moveMarker(markerIndex);
+                                   index++;
+                              }, 1000); // Интервал для перемещения маркеров
+                         }
+                    };
+
+                    markers.forEach((marker, index) => {
+                         moveMarker(index);
+                    });
+               }
+
+               // Вызов функции для получения маршрута между начальной и конечной точками
+               const start1 = new google.maps.LatLng(51.098469658843236, 71.40887698957481);
+               const end1 = new google.maps.LatLng(51.10287829836088, 71.3960347231054);
+
+               const start2 = new google.maps.LatLng(51.10287829836088, 71.3960347231054);
+               const end2 = new google.maps.LatLng(51.08615102293493, 71.40351704814039);
+
+               const start3 = new google.maps.LatLng(51.08615102293493, 71.40351704814039);
+               const end3 = new google.maps.LatLng(51.098469658843236, 71.40887698957481);
+
+               calculateAndDisplayRoute(start1, end1);
+               calculateAndDisplayRoute(start2, end2);
+               calculateAndDisplayRoute(start3, end3);
+          }
+
+     </script>
+
+     <script async defer
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAq0DAj3TcXIii9h1-PfXgErLgDbRsQWEo&callback=initMap">
+          </script>
+</body>
+
+</html>
