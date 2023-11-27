@@ -1,0 +1,17 @@
+<!-- templates/select_role.html -->
+{% extends 'myapp/base.html' %}
+{% block content %}
+    <h1>Select Role to Register</h1>
+    <form method="get" action="{% url 'register_personnel' %}">
+        <select name="role">
+            <option value="Driver">Driver</option>
+            <option value="Admin">Admin</option>
+            <option value="Maintenance">Maintenance Personnel</option>
+            <option value="FuelingPerson">Fueling Person</option>
+        </select>
+        <input type="submit" value="Select">
+    </form>
+    <script>
+        document.getElementById("nav-personnel").style.color = "#f7f7f9";
+    </script>
+{% endblock %}

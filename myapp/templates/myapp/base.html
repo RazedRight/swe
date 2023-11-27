@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VMS</title>
+    <link rel="stylesheet" href="../../static/navStyle.css">
+    <script>
+        function showForm(role) {
+            // Hide all forms
+            document.getElementById('formDriver').style.display = 'none';
+            document.getElementById('formAdmin').style.display = 'none';
+            document.getElementById('formMaintenance').style.display = 'none';
+            document.getElementById('formFuelingPerson').style.display = 'none';
+    
+            // Show the selected form
+            document.getElementById('form' + role.charAt(0).toUpperCase() + role.slice(1)).style.display = 'block';
+        }
+    </script>    
+</head>
+<body>
+    {% block header %}
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <a class="navbar-brand" href="#">VMS</a>
+                <div class="navbar-nav">
+                    <a class="nav-item" href="{% url 'home' %}" id="nav-home">Home</a>
+                    <a class="nav-item" href="{% url 'service_page' %}" id="nav-service">Service</a> 
+                    <a class="nav-item" href="{% url 'vehicles' %}" id="nav-vehicles">Vehicles</a> 
+                    <a class="nav-item" href="{% url 'personnel' %}" id="nav-personnel">Personnel</a>
+                    <a class="nav-item" href="{% url 'create_task' %}" id="nav-create-task">Create Task</a>
+                    <a class="nav-item" href="{% url 'contacts' %}" id="nav-contacts">Contacts</a>
+                    <a class="nav-item" href="{% url 'about_us' %}" id="nav-about">About Us</a>
+                    <a class="nav-item" href="{% url 'make_an_appointment' %}" id="nav-appointment">Appointment</a>
+                    <a class="nav-item" href="{% url 'logout' %}">Logout</a>
+                </div>
+                <div class="navbar-search">
+                    <form method="get" action="{% url 'search_personnel' %}">
+                        <input type="text" name="q" placeholder="search for staff">
+                        <button type="submit">search</button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+    </header>
+    {% endblock %}
+
+    <main class="main-content">
+        <!-- Content here will change depending on the template that extends base.html -->
+        {% block content %}
+        {% endblock content %}
+    </main>
+
+    <footer>
+        <!-- Footer content here -->
+    </footer>
+</body>
+</html>

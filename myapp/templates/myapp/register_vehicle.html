@@ -1,0 +1,13 @@
+{% extends 'myapp/base.html' %}
+{% block content %}
+    <h1>Registering a new vehicle</h1>
+    <form method="post" action="{% url 'register_vehicle' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Register">
+    </form>
+
+    <script>
+        document.getElementById("nav-vehicles").style.color = "#f7f7f9";
+    </script>
+{% endblock %}

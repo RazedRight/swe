@@ -1,0 +1,70 @@
+<!-- search_personnel.html -->
+
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+  <h1>Search Personnel</h1>
+
+  <!-- Add your search form here if needed -->
+
+  {% if personnel_data %}
+    <p>Results for '{{ search_query }}':</p>
+    <ul>
+        {% for result in personnel_data %}
+            <li>{{ result.first_name }} {{ result.last_name }} - {{ result.role }}</li>
+            {# Add other fields as needed #}
+        {% endfor %}
+    </ul>
+    <table> 
+      <thead>
+        <tr>
+          <th>User ID</th>
+          <th>Email</th>
+          <th>First Name</th>
+          <th>Surname</th>
+          <th>Role</th>
+          <th>Phone Number</th>
+          <!-- Additional fields based on roles -->
+          {% if personnel_data.0.role == 'Driver' %}
+            <th>Driving License</th>
+            <th>Vehicle</th>
+          {% elif personnel_data.0.role == 'FuelingPerson' %}
+            <th>Gas Station Name</th>
+          {% endif %}
+          <!-- Add other role-specific fields as needed -->
+          <th>Created At</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in personnel_data %}
+          <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.first_name }}</td>
+            <td>{{ user.surname }}</td>
+            <td>{{ user.role }}</td>
+            <td>{{ user.phone_number }}</td>
+            <!-- Additional fields based on roles -->
+            {% if user.role == 'Driver' %}
+              <td>{{ user.driving_license }}</td>
+              <td>{{ user.vehicle }}</td>
+            {% elif user.role == 'FuelingPerson' %}
+              <td>{{ user.gas_station_name }}</td>
+            {% endif %}
+            <!-- Add other role-specific fields as needed -->
+            <td>{{ user.created_at }}</td>
+            <!-- Add other fields from User model as needed -->
+            <td>
+                <a href="{% url 'delete_personnel' user.id %}" onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No search results found '{{ search_query }}'.</p>
+  {% endif %}
+  <script>
+    document.getElementById("nav-personnel").style.color = "#f7f7f9";
+  </script>
+{% endblock %}

@@ -1,0 +1,14 @@
+<!-- register_personnel.html -->
+
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+<h1>Register New {{ role }}</h1>
+
+<form method="post" action="{% url 'register_personnel' %}?role={{ role }}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Register">
+</form>
+
+{% endblock %}

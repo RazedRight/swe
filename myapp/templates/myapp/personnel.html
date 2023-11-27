@@ -1,0 +1,25 @@
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+  <h1>Personnel</h1>
+  <p>Select the role of employees to be displayed below</p>
+
+  <!-- Add the dropdown menu for selecting roles -->
+  <form method="get" action="{% url 'personnel' %}">
+    <select name="role" onchange="this.form.submit()">
+      <option value=""> Select a Role</option>
+      <option value="Driver">Driver</option>
+      <option value="Maintenance">Maintenance Personnel</option>
+      <option value="FuelingPerson">Fueling Person</option>
+    </select>
+  </form>
+
+  {% if personnel_data %}
+    <!-- Display the personnel data table -->
+    {% include 'myapp/generic_personnel_table.html' %}
+  {% endif %}
+  <a href="select_role">Register new user</a>
+  <script>
+    document.getElementById("nav-personnel").style.color = "#f7f7f9";
+  </script>
+{% endblock %}
